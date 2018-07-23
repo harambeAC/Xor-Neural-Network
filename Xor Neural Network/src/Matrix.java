@@ -80,18 +80,4 @@ public class Matrix {
 
         return new Matrix(returnMatrix);
     }
-
-    public static void main(String[] args){
-        Matrix m1 = new Matrix(new double[][]{
-                {4,8},
-                {0,2},
-        });
-
-         Matrix m2 = new Matrix(new double[][]{
-                 {5,2},
-                 {9,4}
-         });
-        //System.out.println("Matrix");
-
-    }
 }

@@ -24,6 +24,16 @@ public class Xor {
                 {1,0}
         };
 
-        Network network = new Network(new Matrix(input_data[0]),new Matrix(target_output[0]));
+        Network network = new Network(new Matrix(input_data),new Matrix(target_output));
+        
+        double[] test = input_data[0];
+        System.out.println(network.test(new Matrix(test)));
+        test = input_data[1];
+        System.out.println(network.test(new Matrix(test)));
+        test = input_data[2];
+        System.out.println(network.test(new Matrix(test)));
+        test = input_data[3];
+        System.out.println(network.test(new Matrix(test)));
+
     }
 }
