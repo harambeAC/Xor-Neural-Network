@@ -80,4 +80,11 @@ public class Matrix {
 
         return new Matrix(returnMatrix);
     }
+    
+    /*public static void main(String[] args) {
+    		Matrix m1 = new Matrix(new double[][] {{1,2,3},{1,2,3}});
+    	    	Matrix m2 = new Matrix(new double[][] {{1,2,3},{1,2,3}}); 
+
+    	    	System.out.println(Arrays.deepToString(Matrix.add(m1, m2).matrix));
+    }*/
 }
