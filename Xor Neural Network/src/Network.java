@@ -105,7 +105,7 @@ public class Network {
 
 	        printInfo(network_output, target_output.matrix[i], network_input.matrix[i]);
 	        calculate_gradient(new Matrix(network_input.matrix[i]), network_output,new Matrix(target_output.matrix[i]));
-	        //check_gradients(cost, new Matrix(network_input.matrix[i]), new Matrix(target_output.matrix[i]));
+	        check_gradients(cost, new Matrix(network_input.matrix[i]), new Matrix(target_output.matrix[i]));
 	        printInfo(network_output, target_output.matrix[i], network_input.matrix[i]);
 
 	        
