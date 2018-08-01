@@ -39,7 +39,7 @@ public class Matrix {
         return rows + "X" + columns;
     }
 
-    static Matrix multiply(Matrix matrix1, Matrix matrix2) {
+    static Matrix dot_product(Matrix matrix1, Matrix matrix2) {
 
         //System.out.println(Arrays.deepToString(matrix1.matrix));
         //System.out.println(Arrays.deepToString(matrix2.matrix));
@@ -80,6 +80,49 @@ public class Matrix {
 
         return new Matrix(returnMatrix);
     }
+    
+    static Matrix subtract(Matrix matrix1, Matrix matrix2) {
+        return add(matrix1, Matrix.multiply(matrix2, -1.0));
+    }
+
+	private static Matrix multiply(Matrix matrix2, double i) {
+		// TODO Auto-generated method stub
+		for(int k = 0; k<matrix2.matrix.length; k++) {
+			for(int j = 0; j<matrix2.matrix[k].length; j++) {
+				matrix2.matrix[k][j] *= i;
+			}
+		}
+		return matrix2;
+	}
+
+	public static Matrix multiply(Matrix matrix1, Matrix matrix2) {
+        if(matrix1.rows != matrix2.rows || matrix1.columns != matrix2.columns){
+            throw new Error("Could not multiply matrix of size (" + matrix1.rows + "," + matrix1.columns +
+                    ") to matrix of size (" + matrix2.rows + "," + matrix2.columns + ")");
+        }
+
+        double[][] returnMatrix = new double[matrix1.rows][matrix2.columns];
+
+        for(int i = 0; i<returnMatrix.length; i++){
+            for(int j = 0; j<returnMatrix[i].length; j++) {
+                returnMatrix[i][j] = matrix1.matrix[i][j] * matrix2.matrix[i][j];
+            }
+        }
+
+        return new Matrix(returnMatrix);
+	}
+
+	public static Matrix transpose(Matrix matrix) {
+		// TODO Auto-generated method stub
+        double[][] returnMatrix = new double[matrix.matrix[0].length][matrix.matrix.length];
+
+        for(int i = 0; i<returnMatrix.length; i++){
+            for(int j = 0; j<returnMatrix[i].length; j++) {
+                returnMatrix[i][j] = matrix.matrix[j][i];
+            }
+        }
+        return new Matrix(returnMatrix);
+	}
     
     /*public static void main(String[] args) {
     		Matrix m1 = new Matrix(new double[][] {{1,2,3},{1,2,3}});
