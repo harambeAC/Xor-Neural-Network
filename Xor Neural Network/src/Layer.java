@@ -32,7 +32,7 @@ public class Layer {
     static Matrix step(Matrix input){
         double[][] returnMatrix = new double[1][input.matrix[0].length];
         for(int i = 0; i<input.matrix[0].length; i++){
-            returnMatrix[0][i] = input.matrix[0][i] >= 0 ? 1:0;;
+            returnMatrix[0][i] = input.matrix[0][i] >= 0 ? 1:0;
         }
         return new Matrix(returnMatrix);
     }

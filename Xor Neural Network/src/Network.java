@@ -9,6 +9,11 @@ public class Network {
     Matrix output_layer_weights; // these are the weights going into the output layer. Will be a 5X2 matrix
     Matrix output_layer_bias; // this is the bias weights going into the output layer. Will be a 1X2 matrix
     Layer output_layer;
+
+    Matrix hidden_layer_weights_derivatives;
+    Matrix hidden_layer_bias_derivatives;
+    Matrix output_layer_weights_derivatives;
+    Matrix output_layer_bias_derivatives;
     Matrix network_input;
 
     //my hyperparameters
@@ -31,12 +36,16 @@ public class Network {
         initialize(output_layer_bias);
 
         this.hidden_layer_weights = new Matrix(hidden_layer_weights);
+        this.hidden_layer_weights_derivatives = new Matrix(hidden_layer_weights);
 
         this.hidden_layer_bias = new Matrix(hidden_layer_bias);
+        this.hidden_layer_bias_derivatives = new Matrix(hidden_layer_bias);
 
         this.output_layer_weights = new Matrix(output_layer_weights);
+        this.output_layer_weights_derivatives = new Matrix(output_layer_weights);
 
         this.output_layer_bias = new Matrix(output_layer_bias);
+        this.output_layer_bias_derivatives = new Matrix(output_layer_bias);
 
         //train
         backpropagation(target_output);
@@ -62,6 +71,10 @@ public class Network {
         System.out.println("hidden layer output"+Arrays.deepToString(this.hidden_layer_output.matrix));
         System.out.println("output layer weights"+Arrays.deepToString(this.output_layer_weights.matrix));
         System.out.println("output layer bias"+Arrays.deepToString(this.output_layer_bias.matrix));
+        System.out.println("hidden layer weights derivative"+Arrays.deepToString(this.hidden_layer_weights_derivatives.matrix));
+        System.out.println("hidden layer bias derivative " + Arrays.deepToString(this.hidden_layer_bias_derivatives.matrix));
+        System.out.println("output layer weights derivative"+Arrays.deepToString(this.output_layer_weights_derivatives.matrix));
+        System.out.println("output layer bias derivative"+Arrays.deepToString(this.output_layer_bias_derivatives.matrix));
     }
 
     void initialize(double[][] arr){
@@ -91,10 +104,12 @@ public class Network {
 	        double cost = cross_entropy(network_output, new Matrix(target_output.matrix[i]));
 
 	        printInfo(network_output, target_output.matrix[i], network_input.matrix[i]);
-	        gradient_descent(new Matrix(network_input.matrix[i]), network_output,new Matrix(target_output.matrix[i]));
+	        calculate_gradient(new Matrix(network_input.matrix[i]), network_output,new Matrix(target_output.matrix[i]));
 	        check_gradients(cost, new Matrix(network_input.matrix[i]), new Matrix(target_output.matrix[i]));
 	        printInfo(network_output, target_output.matrix[i], network_input.matrix[i]);
 
+	        
+	        update_weights();
 	        //System.out.println(Arrays.deepToString(network_input.matrix));
 
 	        System.out.println(cost);
@@ -167,8 +182,37 @@ public class Network {
         }
     }
     
+    void update_weights() {  	
+    		//update hidden layer weights
+        for(int i = 0; i<hidden_layer_weights.matrix.length; i++){
+            for(int j = 0; j<hidden_layer_weights.matrix[i].length; j++){
+            		hidden_layer_weights.matrix[i][j] -= learning_rate * hidden_layer_weights_derivatives.matrix[i][j];
+            }
+        }
+        
+		//update hidden layer bias weights
+        for(int i = 0; i<hidden_layer_bias.matrix.length; i++){
+            for(int j = 0; j<hidden_layer_bias.matrix[i].length; j++){
+            		hidden_layer_bias.matrix[i][j] -= learning_rate * hidden_layer_bias_derivatives.matrix[i][j];
+            }
+        }
+        
+		//update output layer  weights
+        for(int i = 0; i<output_layer_weights.matrix.length; i++){
+            for(int j = 0; j<output_layer_weights.matrix[i].length; j++){
+            		output_layer_weights.matrix[i][j] -= learning_rate * output_layer_weights_derivatives.matrix[i][j];
+            }
+        }
+        
+		//update output layer bias weights
+        for(int i = 0; i<output_layer_bias.matrix.length; i++){
+            for(int j = 0; j<output_layer_bias.matrix[i].length; j++){
+            		output_layer_bias.matrix[i][j] -= learning_rate * output_layer_bias_derivatives.matrix[i][j];
+            }
+        }
+    }
 
-    void gradient_descent(Matrix network_input, Matrix network_output, Matrix target_output){
+    void calculate_gradient(Matrix network_input, Matrix network_output, Matrix target_output){
     		Matrix error = Matrix.subtract(target_output, network_output);
     		Matrix delta = Matrix.multiply(error,this.hidden_layer.sigmoidPrime(network_output)); // applying derivative of sigmoid to error
     		Matrix z2 = Matrix.dot_product(delta,hidden_layer_weights);
@@ -201,7 +245,7 @@ public class Network {
 
         //calculate gradients of hidden layer weights
         for(int i = 0; i<hidden_layer_weights.matrix.length;i++){ // 2 options
-            for(int j = 0; j<hidden_layer_weights.matrix[i].length;j++){ // 5 options
+            for(int j = 0; j<hidden_layer_weights.matrix[i].length;j++){ // 5 options-
                 double node_output = network_output.matrix[0][i];
                 double target = target_output.matrix[0][i];
                 double previous_node_output = network_input.matrix[0][i];
@@ -240,35 +284,30 @@ public class Network {
     double mean_square_error(Matrix network_output, Matrix target_output){
         //System.out.println("network output: "+ Arrays.deepToString(network_output.matrix));
         //System.out.println("target output: "+ Arrays.deepToString(target_output.matrix));
-    	
-        double cost = 0;
+    	        double cost = 0;
         for(int i = 0; i<target_output.matrix[0].length; i++){
             cost += Math.pow(target_output.matrix[0][i]-network_output.matrix[0][i], 2);
         }
         return (cost)/target_output.matrix[0].length;
-    }
-    double squared_error(Matrix network_output, Matrix target_output){
+    }double squared_error(Matrix network_output, Matrix target_output){
         double cost = 0;
         for(int i = 0; i<target_output.matrix[0].length; i++){
             cost += Math.pow(target_output.matrix[0][i]-network_output.matrix[0][i], 2);
         }
         return 0.5*(cost);
-    }
-    double root_mean_square_error(Matrix network_output, Matrix target_output){
+    }double root_mean_square_error(Matrix network_output, Matrix target_output){
         double cost = 0;
         for(int i = 0; i<target_output.matrix[0].length; i++){
             cost += Math.pow(target_output.matrix[0][i]-network_output.matrix[0][i], 2);
         }
         return Math.sqrt(cost/target_output.matrix[0].length);
-    }
-    double sum_square_error(Matrix network_output, Matrix target_output) {
+    }double sum_square_error(Matrix network_output, Matrix target_output) {
         double cost = 0;
         for (int i = 0; i < target_output.matrix[0].length; i++) {
             cost += Math.pow(target_output.matrix[0][i] - network_output.matrix[0][i], 2);
         }
         return cost;
-    }
-    double cross_entropy(Matrix network_output, Matrix target_output) {
+    }double cross_entropy(Matrix network_output, Matrix target_output) {
         double cost = 0;
         for (int i = 0; i < target_output.matrix[0].length; i++) {
             cost += -1*target_output.matrix[0][i]* Math.log(network_output.matrix[0][i]);
