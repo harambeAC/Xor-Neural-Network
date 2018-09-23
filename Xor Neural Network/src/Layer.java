@@ -20,7 +20,7 @@ public class Layer {
         }
         return new Matrix(returnMatrix);
     }
-
+ 
     static Matrix relu(Matrix input) {
         double[][] returnMatrix = new double[1][input.matrix[0].length];
         for(int i = 0; i<input.matrix[0].length; i++){
