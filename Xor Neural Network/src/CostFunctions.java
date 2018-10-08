@@ -1,5 +1,5 @@
 
-public class ErrorFunctions {
+public class CostFunctions {
 
 	static double mean_square_error(Matrix network_output, Matrix target_output) {
 		// System.out.println("network output: "+

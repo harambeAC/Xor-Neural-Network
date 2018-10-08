@@ -17,7 +17,7 @@ public class BackProp {
 	void backpropagation(Matrix target_output) {
 		for (int i = 0; i < net.network_input.matrix.length; i++) {
 			Matrix network_output = net.feedforward(new Matrix(net.network_input.matrix[i]));
-			double cost = ErrorFunctions.cross_entropy(network_output, new Matrix(target_output.matrix[i]));
+			double cost = CostFunctions.cross_entropy(network_output, new Matrix(target_output.matrix[i]));
 
 			printInfo(network_output, target_output.matrix[i], net.network_input.matrix[i]);
 			calculator.calculate_gradient(new Matrix(net.network_input.matrix[i]), network_output,
